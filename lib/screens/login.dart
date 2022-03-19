@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:common_test1/controllers/authcontroller.dart';
 import 'package:common_test1/models/authentication.dart';
 import 'package:common_test1/screens/SignUP.dart';
+import 'package:common_test1/screens/homepage.dart';
 import 'package:common_test1/screens/landingpage.dart';
 import 'package:common_test1/themeconstants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -261,6 +262,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                         onPressed: ()
 
                                         async {
+                                          String title = '', message = '';
 
 
                                           if (_formKey.currentState!.validate()) {
@@ -271,15 +273,34 @@ class _LoginWidgetState extends State<LoginWidget> {
                                             );
                                           }
 
-                                        await AuthController.instance.auth.SignUpWithEmail(emailTextController!.text, passwordTextController!.text).then((value){
-                                        Get.to(()=>LandingPage());
+                                        try{
 
-                                        }).catchError(error){
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                               SnackBar(content: Text('${error}')),
-                                            );
-                                          };
-                                        Get.to(()=>LandingPage());
+                                          await AuthController.instance.auth.SignUpWithEmail(emailTextController!.text, passwordTextController!.text);
+
+                                        } on FirebaseAuthException catch  (e) {
+                                           AlertDialog(
+                                            content: const Text("Entered email is not present in our system"),
+                                            title: const Text("Invalid Email-ID", style: TextStyle(color: Colors.black)),
+                                            actions: [
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text("Okay")),
+                                            ],
+                                          );
+
+                                          print(e.message);
+                                        }
+
+
+
+
+
+
+
+
+                                        Get.off(()=>LandingPage());
 
 
 

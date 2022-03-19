@@ -1,7 +1,8 @@
 
-import 'dart:html';
+
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 
 abstract class AuthBase{
@@ -29,6 +30,8 @@ final _firebaseAuth =FirebaseAuth.instance;
 
 
   Stream<User?>  authStateChanges()=> _firebaseAuth.authStateChanges();
+
+
 
 
   @override
@@ -74,10 +77,31 @@ User? get currentUser => _firebaseAuth.currentUser;
 
 @override
 Future<User?> signInWithEmailAndPassword(String email, String password) async {
-  final userCredential = await _firebaseAuth.signInWithCredential(
-    EmailAuthProvider.credential(email: email, password: password),
-  );
-  return userCredential.user;
+  try {
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email:email,
+        password: password
+    );
+  } on FirebaseAuthException catch (e) {
+
+    if (e.code == 'user-not-found') {
+
+
+
+
+      if (kDebugMode) {
+        print('No user found for that email.');
+      }
+    } else if (e.code == 'wrong-password') {
+
+      if (kDebugMode) {
+        print('Wrong password provided for that user.');
+      }
+    }
+    else {
+      print('Unknown Error');
+    }
+  }
 }
 
 @override

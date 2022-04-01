@@ -1,4 +1,5 @@
 import 'package:common_test1/controllers/authcontroller.dart';
+import 'package:common_test1/screens/cupertino.dart';
 import 'package:common_test1/screens/homepage.dart';
 import 'package:common_test1/screens/login.dart';
 import 'package:common_test1/screens/SignUP.dart';
@@ -49,7 +50,7 @@ class _LandingPageState extends State<LandingPage> {
         }
 
 
-        return HomePage();
+        return CupertinomyApp();
 
 
 

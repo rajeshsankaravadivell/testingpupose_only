@@ -1,10 +1,13 @@
 import 'package:common_test1/controllers/authcontroller.dart';
-import 'package:common_test1/screens/cupertino.dart';
+import 'package:common_test1/controllers/myauthcontroller.dart';
+import 'package:common_test1/main.dart';
+
 import 'package:common_test1/screens/homepage.dart';
 import 'package:common_test1/screens/login.dart';
 import 'package:common_test1/screens/SignUP.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 
 class LandingPage extends StatefulWidget {
@@ -17,25 +20,13 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
 
 
-@override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    AuthController.instance.auth.authStateChanges().listen((user) {
 
-      print(
-        'uid:${user?.uid}'
-      );
-
-
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
 
-        stream: AuthController.instance.auth.authStateChanges(),
+        stream:auth1.authStateChnages(),
         builder: (context, snapshot) {
 
       if(snapshot.connectionState==ConnectionState.active){
@@ -49,8 +40,18 @@ class _LandingPageState extends State<LandingPage> {
 
         }
 
+      if(user.emailVerified){
+        return HomePage();
+      }
+      if(user.emailVerified==false){
 
-        return CupertinomyApp();
+        return ElevatedButton(onPressed: () async{
+          await user.sendEmailVerification();
+          Get.to(auth1.signOut());
+
+        }, child: Text('verifyemail'));
+      }
+
 
 
 

@@ -2,6 +2,7 @@
 
 
 import 'package:common_test1/controllers/authcontroller.dart';
+import 'package:common_test1/controllers/myauthcontroller.dart';
 import 'package:common_test1/models/authentication.dart';
 import 'package:common_test1/screens/SignUP.dart';
 import 'package:common_test1/screens/homepage.dart';
@@ -24,8 +25,8 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
-  TextEditingController? emailTextController;
-  TextEditingController? passwordTextController;
+  TextEditingController? emailTextController= TextEditingController();
+  TextEditingController? passwordTextController= TextEditingController();
   bool?passwordVisibility;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final FocusNode _emailFocusNode = FocusNode();
@@ -35,8 +36,7 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   void initState() {
     super.initState();
-    emailTextController = TextEditingController();
-    passwordTextController = TextEditingController();
+
     passwordVisibility = false;
   }
 
@@ -46,6 +46,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
 
     return Scaffold(
+      backgroundColor: Colors.green,
       key: scaffoldKey,
 
       body: SafeArea(
@@ -103,7 +104,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
                                     Get.to(()=>SignUpWidget());
                                   },
-                                  child: Text('SignUp',style: getText(context).button?.apply(color: Colors.lightBlue),),
+                                  child: Text('Login',style: getText(context).button?.apply(color: Colors.lightBlue),),
 
 
                                   ),
@@ -126,11 +127,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                         padding: EdgeInsetsDirectional.fromSTEB(
                                             20, 0, 20, 0),
                                         child: TextFormField(
-                                          validator:(value){
-                                            if(value==null||value.isEmail){
-                                              return 'Please check the field';
-                                            }
-                                          } ,
+
                                           controller: emailTextController,
                                           obscureText: false,
                                           autocorrect: false,
@@ -275,20 +272,19 @@ class _LoginWidgetState extends State<LoginWidget> {
 
                                         try{
 
-                                          await AuthController.instance.auth.SignUpWithEmail(emailTextController!.text, passwordTextController!.text);
+                                          await auth1.signInWithEmailAndPassword(emailTextController!.text, passwordTextController!.text);
 
                                         } on FirebaseAuthException catch  (e) {
-                                           AlertDialog(
-                                            content: const Text("Entered email is not present in our system"),
-                                            title: const Text("Invalid Email-ID", style: TextStyle(color: Colors.black)),
-                                            actions: [
-                                              ElevatedButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: const Text("Okay")),
-                                            ],
+                                          final snackBar = SnackBar(
+                                            content:  Text(e.message.toString()),
+                                            action: SnackBarAction(
+                                              label: e.code.toString(),
+                                              onPressed: () {
+                                                // Some code to undo the change.
+                                              },
+                                            ),
                                           );
+                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
                                           print(e.message);
                                         }
@@ -300,7 +296,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
 
 
-                                        Get.off(()=>LandingPage());
+                                        Get.offAll(()=>LandingPage());
 
 
 
@@ -309,13 +305,36 @@ class _LoginWidgetState extends State<LoginWidget> {
                                       },
                                         child: Text('login'),)
                                   ),
-                                  Text(
-                                    'Forgot password?',
-                                    style: GoogleFonts.getFont(
-                                      'Open Sans',
-                                      fontSize: 14,
-                                    ),
-                                  ),
+                                 TextButton(onPressed: (){
+                                   showDialog<String>(
+                                     context: context,
+                                     builder: (BuildContext context) => AlertDialog(
+                                       title:  Text('Enter Your Registered Email address'),
+                                       content:  ListTile(
+                                         title: TextFormField(
+                                           controller: emailTextController,
+                                           decoration: InputDecoration(
+                                             label: Text('Email')
+                                           ),
+                                         ),
+                                       ),
+                                       actions: <Widget>[
+                                         TextButton(
+                                           onPressed: () => Navigator.pop(context, 'Cancel'),
+                                           child: const Text('Cancel'),
+                                         ),
+                                         TextButton(
+                                           onPressed: () {
+                                         auth1.resetPassword(email: emailTextController!.text);
+
+
+                                           },
+                                           child: const Text('reset'),
+                                         ),
+                                       ],
+                                     ),
+                                   );
+                                 }, child: Text('Forgot Password ?')),
                                 ],
                               ),
                               Padding(
@@ -324,77 +343,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0, 0, 0, 20),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            width: 100,
-                                            height: 38,
-                                            child: Stack(
-                                              children: [
-                                                Align(
-                                                  alignment: AlignmentDirectional(
-                                                      -0.7, -0.01),
-                                                  child: Container(
-                                                    width: 18,
-                                                    height: 18,
-                                                    clipBehavior: Clip.antiAlias,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: Image.network(
-                                                      'https://facebookbrand.com/wp-content/uploads/2019/04/f_logo_RGB-Hex-Blue_512.png?w=512&h=512',
-                                                    ),
-                                                  ),
-                                                ),
-                                                ElevatedButton(onPressed: ()async{
 
-                                                  await AuthController.instance.auth.signInWithGoogle();
-
-                                                }, child: Text('google')),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                            EdgeInsetsDirectional.fromSTEB(
-                                                20, 0, 0, 0),
-                                            child: Container(
-                                              width: 100,
-                                              height: 38,
-                                              child: Stack(
-                                                children: [
-                                                  Align(
-                                                    alignment:
-                                                    AlignmentDirectional(
-                                                        -0.7, -0.01),
-                                                    child: Container(
-                                                      width: 18,
-                                                      height: 18,
-                                                      clipBehavior:
-                                                      Clip.antiAlias,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                      child: Image.network(
-                                                        'https://i0.wp.com/nanophorm.com/wp-content/uploads/2018/04/google-logo-icon-PNG-Transparent-Background.png?w=1000&ssl=1',
-                                                        fit: BoxFit.contain,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  ElevatedButton(onPressed: (){}, child: Text('google')),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
                                     Row(
                                       mainAxisSize: MainAxisSize.max,
                                       mainAxisAlignment: MainAxisAlignment.center,

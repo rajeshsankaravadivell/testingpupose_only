@@ -1,9 +1,10 @@
+import 'package:common_test1/controllers/myauthcontroller.dart';
 import 'package:common_test1/models/authentication.dart';
 import 'package:common_test1/models/profilemodel.dart';
 import 'package:common_test1/screens/landingpage.dart';
 import 'package:common_test1/screens/login.dart';
-import 'package:common_test1/screens/testform.dart';
-import 'package:common_test1/screens/testwidget.dart';
+
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,7 +16,9 @@ import 'controllers/authcontroller.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  Get.put(AuthController());
+  // Get.put(AuthController());
+
+  Get.put(Authcontroller1());
   runApp(const MyApp());
 }
 
@@ -27,9 +30,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
-      home: InputForm(),
+      home: LandingPage(),
     );
   }
 }

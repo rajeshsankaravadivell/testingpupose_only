@@ -1,8 +1,10 @@
 import 'package:common_test1/controllers/authcontroller.dart';
+import 'package:common_test1/controllers/myauthcontroller.dart';
 import 'package:common_test1/screens/SignUP.dart';
 import 'package:common_test1/screens/landingpage.dart';
 import 'package:common_test1/screens/login.dart';
 import 'package:common_test1/themeconstants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,17 +20,15 @@ class SignUpWidget extends StatefulWidget {
 }
 
 class _SignUpWidgetState extends State<SignUpWidget> {
-  TextEditingController? emailTextController;
-  TextEditingController? passwordTextController;
-  TextEditingController? passwordTextController1;
+  TextEditingController emailTextController= TextEditingController();
+  TextEditingController passwordTextController= TextEditingController();
+  TextEditingController passwordTextController1= TextEditingController();
   bool? passwordVisibility;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
-    emailTextController = TextEditingController();
-    passwordTextController = TextEditingController();
-    passwordTextController1 = TextEditingController();
+
     passwordVisibility = false;
   }
 
@@ -110,38 +110,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                       padding:
                                           const EdgeInsetsDirectional.fromSTEB(
                                               20, 0, 20, 0),
-                                      child: TextFormField(
-                                        controller: emailTextController,
-                                        obscureText: false,
-                                        decoration: const InputDecoration(
-                                          hintText: 'Email',
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Color(0x00000000),
-                                              width: 1,
-                                            ),
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(4.0),
-                                              topRight: Radius.circular(4.0),
-                                            ),
-                                          ),
-                                          focusedBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Color(0x00000000),
-                                              width: 1,
-                                            ),
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(4.0),
-                                              topRight: Radius.circular(4.0),
-                                            ),
-                                          ),
-                                        ),
-                                        style: GoogleFonts.getFont(
-                                          'Open Sans',
-                                          color: const Color(0xFF455A64),
-                                          fontWeight: FontWeight.normal,
-                                        ),
-                                      ),
+                                      child: CustomTextformfield(emailTextController: emailTextController),
                                     ),
                                   ),
                                 ),
@@ -280,153 +249,59 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                     child: ElevatedButton(
                                       onPressed: ()  async {
 
-                                     if(passwordTextController!.text==passwordTextController1!.text){
+                                     if(passwordTextController.text==passwordTextController1.text)
+                                     {
 
-                                       await AuthController.instance.auth.SignUpWithEmail(emailTextController!.text, passwordTextController!.text);
-                                       Get.off(()=>LandingPage());
+
+                                       try {
+                                       await auth1.signUpwithEmail(emailTextController.text, passwordTextController.text);
+                                       Get.to(LandingPage());
+                                       } on FirebaseAuthException catch  (e) {
+                                         print('Failed with error code: ${e.code}');
+                                         print(e.message);
+
+
+                                         showDialog<String>(
+                                           context: context,
+                                           builder: (BuildContext context) => AlertDialog(
+                                             title:  Text(e.code.toString()),
+                                             content:  Text(e.message.toString()),
+                                             actions: <Widget>[
+                                               TextButton(
+                                                 onPressed: () => Navigator.pop(context, 'Cancel'),
+                                                 child: const Text('Cancel'),
+                                               ),
+                                               TextButton(
+                                                 onPressed: () => Navigator.pop(context, 'OK'),
+                                                 child: const Text('OK'),
+                                               ),
+                                             ],
+                                           ),
+                                         );
+
+                                       }
+                                     
+
+                                      // Get.to(LandingPage());
+
+
                                      }
                                      else
                                        return print('Password Missmatch');
 
                                         if (kDebugMode) {
-                                          print(AuthController
-                                              .instance.auth.currentUser!.uid);
+                                          print(auth1.currentUser!.uid);
                                         }
                                       },
                                       child: const Text('SignUp'),
                                     )),
-                                Text(
-                                  'Forgot password?',
-                                  style: GoogleFonts.getFont(
-                                    'Open Sans',
-                                    fontSize: 14,
-                                  ),
-                                ),
+                                TextButton(onPressed: (){
+                                  Get.to(()=>LoginWidget());
+                                }, child: Text('Already Have account?'))
+
                               ],
                             ),
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  0, 12, 0, 10),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsetsDirectional.fromSTEB(
-                                            0, 0, 0, 20),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: 100,
-                                          height: 38,
-                                          child: Stack(
-                                            children: [
-                                              Align(
-                                                alignment:
-                                                    const AlignmentDirectional(
-                                                        -0.7, -0.01),
-                                                child: Container(
-                                                  width: 18,
-                                                  height: 18,
-                                                  clipBehavior: Clip.antiAlias,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: Image.network(
-                                                    'https://facebookbrand.com/wp-content/uploads/2019/04/f_logo_RGB-Hex-Blue_512.png?w=512&h=512',
-                                                  ),
-                                                ),
-                                              ),
-                                              ElevatedButton(
-                                                  onPressed: () async {
-                                                    await AuthController
-                                                        .instance.auth
-                                                        .signInWithGoogle();
-                                                  },
-                                                  child: const Text('google')),
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsetsDirectional
-                                              .fromSTEB(20, 0, 0, 0),
-                                          child: SizedBox(
-                                            width: 100,
-                                            height: 38,
-                                            child: Stack(
-                                              children: [
-                                                Align(
-                                                  alignment:
-                                                      const AlignmentDirectional(
-                                                          -0.7, -0.01),
-                                                  child: Container(
-                                                    width: 18,
-                                                    height: 18,
-                                                    clipBehavior:
-                                                        Clip.antiAlias,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: Image.network(
-                                                      'https://i0.wp.com/nanophorm.com/wp-content/uploads/2018/04/google-logo-icon-PNG-Transparent-Background.png?w=1000&ssl=1',
-                                                      fit: BoxFit.contain,
-                                                    ),
-                                                  ),
-                                                ),
-                                                ElevatedButton(
-                                                    onPressed: () {},
-                                                    child:
-                                                        const Text('google')),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsetsDirectional
-                                            .fromSTEB(0, 0, 10, 0),
-                                        child: Text(
-                                          'Don\'t have an account?',
-                                          style: GoogleFonts.getFont(
-                                            'Open Sans',
-                                            color: const Color(0xFFADADAD),
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      LoginWidget()));
-                                        },
-                                        child: Text(
-                                          'SignUp',
-                                          style: getText(context)
-                                              .button
-                                              ?.apply(color: Colors.lightBlue),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
+
                           ],
                         ),
                       ),
@@ -437,6 +312,51 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class CustomTextformfield extends StatelessWidget {
+  const CustomTextformfield({
+    Key? key,
+    required this.emailTextController,
+  }) : super(key: key);
+
+  final TextEditingController emailTextController;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: emailTextController,
+      obscureText: false,
+      decoration: const InputDecoration(
+        hintText: 'Email',
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Color(0x00000000),
+            width: 1,
+          ),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(4.0),
+            topRight: Radius.circular(4.0),
+          ),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Color(0x00000000),
+            width: 1,
+          ),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(4.0),
+            topRight: Radius.circular(4.0),
+          ),
+        ),
+      ),
+      style: GoogleFonts.getFont(
+        'Open Sans',
+        color: const Color(0xFF455A64),
+        fontWeight: FontWeight.normal,
       ),
     );
   }

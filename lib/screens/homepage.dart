@@ -2,14 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:common_test1/controllers/authcontroller.dart';
 import 'package:common_test1/controllers/myauthcontroller.dart';
 import 'package:common_test1/controllers/profile_controller.dart';
+import 'package:common_test1/models/profilemodel.dart';
 import 'package:common_test1/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 import '../Widgets/custom_text_form_field.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -18,15 +21,21 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-  Map<String,dynamic> myprofile = {
+
+
+
+
+
+  Map<String, dynamic> myprofile = {
     'full_name': 'hi', // John Doe
-    'company': 'digisailor', // Stokes and Sons
+    'company': {
+      'adresline1': 'line2',
+      'adresline2': 'line2'
+    }, // Stokes and Sons
     'age': '28' // 42
   };
 
   Future<void> addUser() {
-
-
     final snackBar = SnackBar(
       content: const Text('Yay! A SnackBar!'),
       action: SnackBarAction(
@@ -39,26 +48,27 @@ class _HomePageState extends State<HomePage> {
 
     // Call the user's CollectionReference to add a new user
     return users
-        .add(myprofile)
-        .then((value) =>  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: const Text('user added successfully'),
-      action: SnackBarAction(
-        label: 'Undo',
-        onPressed: () {
-          // Some code to undo the change.
-        },
-      ),
-    ))
-    )
-        .catchError((error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content:  Text(error),
-      action: SnackBarAction(
-        label: 'Undo',
-        onPressed: () {
-          // Some code to undo the change.
-        },
-      ),
-    )));
+        .doc('2')
+        .set(myprofile)
+        .then((value) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: const Text('user added successfully'),
+              action: SnackBarAction(
+                label: 'Undo',
+                onPressed: () {
+                  // Some code to undo the change.
+                },
+              ),
+            )))
+        .catchError(
+            (error) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(error),
+                  action: SnackBarAction(
+                    label: 'Undo',
+                    onPressed: () {
+                      // Some code to undo the change.
+                    },
+                  ),
+                )));
   }
 
   @override
@@ -73,9 +83,29 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        bottomNavigationBar: BottomAppBar(
+          color: Color(0xFF6210ee),
+          child: Row(
+            children: [
+              IconButton(icon: Icon(Icons.menu), onPressed: () {}),
+              Spacer(),
+              IconButton(icon: Icon(Icons.search), onPressed: () {}),
+              IconButton(icon: Icon(Icons.more_vert), onPressed: () {}),
+            ],
+          ),
+        ),
         appBar: AppBar(
+          backgroundColor: Color(0xFF6210ee),
           title: const Text('Homepage'),
           actions: [
+
+            ElevatedButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black)),
+                onPressed: () {
+                  // addUser();
+                  moviesRef.add(Movie(title: 'Terminator', genre: 'Action'));
+                },
+                child: Text('add')),
             IconButton(
                 onPressed: () async {
                   await auth1.signOut();
@@ -83,37 +113,43 @@ class _HomePageState extends State<HomePage> {
                 icon: const Icon(Icons.logout))
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // controller = Get.find();
-          },
-        ),
-        body: FutureBuilder<DocumentSnapshot>(
-          future: users.doc('bJLKKD8KBvvhNJJ9d6Pu').get(),
+        floatingActionButton: FloatingActionButton(child: Icon(Icons.add), onPressed: () {}),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        body: StreamBuilder<QuerySnapshot>(
+          stream: moviesRef.snapshots(),
           builder:
-              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
               return Text("Something went wrong");
             }
 
-            if (snapshot.hasData && !snapshot.data!.exists) {
-              return Text("Document does not exist");
-            }
 
-            if (snapshot.connectionState == ConnectionState.done) {
-              Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-              return Column(
-                children: [
-                  Text("Full Name: ${data['full_name']} ${data['last_name']}"),
-                  ElevatedButton(onPressed: (){addUser();}, child: Text('add'))
-                ],
+
+            if (snapshot.connectionState == ConnectionState.active &&
+                snapshot.hasData) {
+              List<QueryDocumentSnapshot> data=snapshot.data!.docs;
+
+              return ListView.builder(
+
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                     
+                      leading: CircleAvatar(
+                        child: Image.network('https://cdn-icons-png.flaticon.com/512/1038/1038100.png'),
+                      ),
+
+                      title: Text(data[index]['title']),
+                      subtitle: Text(data[index]['genre']),
+                    ),
+                  );
+                },
               );
             }
 
             return Text("loading");
           },
-        )
-    );
+        ));
   }
 }

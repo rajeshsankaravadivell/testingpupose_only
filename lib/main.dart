@@ -3,6 +3,8 @@ import 'package:common_test1/models/authentication.dart';
 import 'package:common_test1/models/profilemodel.dart';
 import 'package:common_test1/screens/landingpage.dart';
 import 'package:common_test1/screens/login.dart';
+import 'package:common_test1/services.dart';
+import 'package:common_test1/themeconstants.dart';
 
 
 import 'package:flutter/cupertino.dart';
@@ -17,7 +19,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   // Get.put(AuthController());
-
+  firestore.clearPersistence();
   Get.put(Authcontroller1());
   runApp(const MyApp());
 }
@@ -31,6 +33,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+
+      theme: buildShrineTheme(),
       title: 'Flutter Demo',
       home: LandingPage(),
     );
@@ -104,7 +108,8 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'You have pushed the '
+                  'button this many times:',
             ),
             Text(
               '$_counter',

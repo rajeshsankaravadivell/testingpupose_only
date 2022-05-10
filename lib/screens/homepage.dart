@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:common_test1/controllers/authcontroller.dart';
+import 'package:common_test1/Widgets/lib_color_schemes.g%20(3).dart';
+
 import 'package:common_test1/controllers/myauthcontroller.dart';
 import 'package:common_test1/controllers/profile_controller.dart';
 import 'package:common_test1/models/profilemodel.dart';
@@ -11,8 +12,9 @@ import 'package:get/get.dart';
 import '../Widgets/custom_text_form_field.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key, required this.callback}) : super(key: key);
 
+  final void Function() callback;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -84,7 +86,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         bottomNavigationBar: BottomAppBar(
-          color: Color(0xFF6210ee),
+
           child: Row(
             children: [
               IconButton(icon: Icon(Icons.menu), onPressed: () {}),
@@ -95,15 +97,20 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         appBar: AppBar(
-          backgroundColor: Color(0xFF6210ee),
+
           title: const Text('Homepage'),
           actions: [
 
             ElevatedButton(
-              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black)),
+
                 onPressed: () {
                   // addUser();
-                  moviesRef.add(Movie(title: 'Terminator', genre: 'Action'));
+                  moviesRef.add(Movie(title: 'Terminator', genre: 'Action')).then((value) => showDialog(context: context, builder: (context){
+                    return AlertDialog(
+                      content: Text("Hello"),
+                      title: Text("SUccess",),
+                    );
+                  }));
                 },
                 child: Text('add')),
             IconButton(
@@ -113,7 +120,9 @@ class _HomePageState extends State<HomePage> {
                 icon: const Icon(Icons.logout))
           ],
         ),
-        floatingActionButton: FloatingActionButton(child: Icon(Icons.add), onPressed: () {}),
+        floatingActionButton: FloatingActionButton(child: Icon(Icons.add), onPressed: () {
+          widget.callback();
+        }),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         body: StreamBuilder<QuerySnapshot>(
           stream: moviesRef.snapshots(),
@@ -134,6 +143,7 @@ class _HomePageState extends State<HomePage> {
                 itemCount: data.length,
                 itemBuilder: (context, index) {
                   return Card(
+                    // color: darkColorScheme.onBackground,
                     child: ListTile(
                      
                       leading: CircleAvatar(

@@ -1,7 +1,7 @@
 
 
 
-import 'package:common_test1/controllers/authcontroller.dart';
+
 import 'package:common_test1/controllers/myauthcontroller.dart';
 import 'package:common_test1/models/authentication.dart';
 import 'package:common_test1/screens/SignUP.dart';
@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:common_test1/controllers/authcontroller.dart';
+
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({Key? key,}) : super(key: key);
@@ -46,7 +46,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
 
     return Scaffold(
-      backgroundColor: Colors.green,
+
       key: scaffoldKey,
 
       body: SafeArea(
@@ -58,8 +58,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 alignment: AlignmentDirectional(0, -1),
                 child: Container(
                   height:MediaQuery.of(context).size.height*0.40,
-                  color: Colors.white,
-                  child: Image.network(
+                                child: Image.network(
                     'https://www.digisailor.com/assets/img/digisailorlogo.png',
                     width: double.infinity,
                     height: 200,
@@ -76,9 +75,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                       child: Container(
                         width: 100,
                         height: 100,
-                        decoration: BoxDecoration(
-                          color: Color(0x00EEEEEE),
-                        ),
+
                       ),
                     ),
                     Expanded(
@@ -87,7 +84,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                         width: double.infinity,
                         height: 100,
                         decoration: BoxDecoration(
-                          color: Color(0xFFEEEEEE),
+
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: SingleChildScrollView(
@@ -104,7 +101,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
                                     Get.to(()=>SignUpWidget());
                                   },
-                                  child: Text('Login',style: getText(context).button?.apply(color: Colors.lightBlue),),
+                                  child: Text('Login'),
 
 
                                   ),
@@ -120,7 +117,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                       width: 300,
                                       height: 50,
                                       decoration: BoxDecoration(
-                                        color: Color(0xFFE0E0E0),
+
                                         borderRadius: BorderRadius.circular(25),
                                       ),
                                       child: Padding(
@@ -137,38 +134,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                                             FocusScope.of(context).requestFocus(_passwordFocusNode);
                                           },
 
-                                          decoration:  InputDecoration(
-
-
-
-                                            hintText: 'Email@gmail.com',
-                                        label: Text('Email'),
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Color(0x00000000),
-                                                width: 1,
-                                              ),
-                                              borderRadius:
-                                              BorderRadius.only(
-                                                topLeft: Radius.circular(4.0),
-                                                topRight: Radius.circular(4.0),
-                                              ),
-                                            ),
-                                            focusedBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Color(0x00000000),
-                                                width: 1,
-                                              ),
-                                              borderRadius:
-                                              BorderRadius.only(
-                                                topLeft: Radius.circular(4.0),
-                                                topRight: Radius.circular(4.0),
-                                              ),
-                                            ),
-                                          ),
                                           style: GoogleFonts.getFont(
                                             'Open Sans',
-                                            color: Color(0xFF455A64),
+
                                             fontWeight: FontWeight.normal,
                                           ),
                                         ),
@@ -182,7 +150,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                       width: 300,
                                       height: 50,
                                       decoration: BoxDecoration(
-                                        color: Color(0xFFE0E0E0),
+
                                         borderRadius: BorderRadius.circular(25),
                                       ),
                                       child: Padding(
@@ -205,7 +173,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                             hintText: 'Password',
                                             enabledBorder: UnderlineInputBorder(
                                               borderSide: BorderSide(
-                                                color: Color(0x00000000),
+
                                                 width: 1,
                                               ),
                                               borderRadius:
@@ -214,17 +182,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                                 topRight: Radius.circular(4.0),
                                               ),
                                             ),
-                                            focusedBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color: Color(0x00000000),
-                                                width: 1,
-                                              ),
-                                              borderRadius:
-                                              const BorderRadius.only(
-                                                topLeft: Radius.circular(4.0),
-                                                topRight: Radius.circular(4.0),
-                                              ),
-                                            ),
+
                                             suffixIcon: InkWell(
                                               onTap: () => setState(
                                                     () => passwordVisibility =
@@ -241,7 +199,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                           ),
                                           style: GoogleFonts.getFont(
                                             'Open Sans',
-                                            color: Color(0xFF455A64),
+
                                             fontWeight: FontWeight.normal,
                                           ),
                                         ),
@@ -357,7 +315,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                             'Don\'t have an account?',
                                             style: GoogleFonts.getFont(
                                               'Open Sans',
-                                              color: Color(0xFFADADAD),
+
                                               fontSize: 14,
                                             ),
                                           ),
@@ -366,7 +324,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
                                           Get.to(()=>SignUpWidget());
                                         },
-                                          child: Text('SignUp',style: getText(context).button?.apply(color: Colors.lightBlue),),
+                                          child: Text('SignUp',),
 
 
                                         ),

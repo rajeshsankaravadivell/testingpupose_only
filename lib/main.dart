@@ -8,14 +8,13 @@ import 'package:common_test1/services.dart';
 import 'package:common_test1/themeconstants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:get/get.dart';
 
-import 'controllers/authcontroller.dart';
+import 'Widgets/lib_color_schemes.g (3).dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,19 +26,34 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool colorScheme = true;
+
+  void changeColorscheme() {
+    setState(() {
+      colorScheme = !colorScheme;
+    });
+    print("Hello");
+  }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
 
-      theme: buildShrineTheme(),
+      theme: ThemeData(
+          colorScheme: colorScheme ? darkColorScheme : lightColorScheme),
       title: 'Flutter Demo',
-      home: LandingPage(),
+      home: LandingPage(callback: changeColorscheme),
     );
   }
 }
@@ -112,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             const Text(
               'You have pushed the '
-                  'button this many times:',
+              'button this many times:',
             ),
             Text(
               '$_counter',

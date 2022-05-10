@@ -1,4 +1,4 @@
-import 'package:common_test1/controllers/authcontroller.dart';
+
 import 'package:common_test1/controllers/myauthcontroller.dart';
 import 'package:common_test1/screens/SignUP.dart';
 import 'package:common_test1/screens/landingpage.dart';
